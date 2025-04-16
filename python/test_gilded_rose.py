@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Tests for Gilded Rose inventory system
+
+This module contains comprehensive tests for the Gilded Rose inventory system,
+covering all item types and edge cases.
 """
 import unittest
 from gilded_rose import Item, GildedRose
