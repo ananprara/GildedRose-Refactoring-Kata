@@ -137,6 +137,38 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(4, items[0].sell_in)
         self.assertEqual(50, items[0].quality)
 
+    def test_conjured_item_before_sell_date(self):
+        """Conjured items degrade twice as fast before sell date"""
+        items = [Item("Conjured Mana Cake", 5, 10)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(4, items[0].sell_in)
+        self.assertEqual(8, items[0].quality)
+
+    def test_conjured_item_on_sell_date(self):
+        """Conjured items degrade four times as fast on sell date"""
+        items = [Item("Conjured Mana Cake", 0, 10)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(-1, items[0].sell_in)
+        self.assertEqual(6, items[0].quality)
+
+    def test_conjured_item_after_sell_date(self):
+        """Conjured items degrade four times as fast after sell date"""
+        items = [Item("Conjured Mana Cake", -1, 10)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(-2, items[0].sell_in)
+        self.assertEqual(6, items[0].quality)
+
+    def test_conjured_item_minimum_quality(self):
+        """Conjured items quality never goes below 0"""
+        items = [Item("Conjured Mana Cake", 5, 1)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(4, items[0].sell_in)
+        self.assertEqual(0, items[0].quality)
+
     def test_item_names_dont_change(self):
         """Item names should never change"""
         items = [Item("foo", 0, 0)]
