@@ -26,6 +26,8 @@ class GildedRose:
                 self._update_aged_brie(item)
             elif item.name == "Backstage passes to a TAFKAL80ETC concert":
                 self._update_backstage_pass(item)
+            elif item.name.startswith("Conjured"):
+                self._update_conjured_item(item)
             else:
                 self._update_regular_item(item)
 
@@ -58,6 +60,17 @@ class GildedRose:
         
         # Quality degrades twice as fast after sell date
         if item.sell_in < 0:
+            self._decrease_quality(item)
+            
+    def _update_conjured_item(self, item):
+        """Update conjured item quality which decreases twice as fast as regular items."""
+        # Conjured items degrade twice as fast
+        self._decrease_quality(item)
+        self._decrease_quality(item)
+        
+        # Quality degrades twice as fast after sell date (so 4x regular)
+        if item.sell_in < 0:
+            self._decrease_quality(item)
             self._decrease_quality(item)
 
     def _increase_quality(self, item):
