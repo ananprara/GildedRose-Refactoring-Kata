@@ -1,42 +1,80 @@
 # -*- coding: utf-8 -*-
+"""
+Gilded Rose Inventory System
+"""
 
-class GildedRose(object):
 
+class GildedRose:
+    """
+    The Gilded Rose inventory management system that handles
+    the daily update of quality and sell-in values for items.
+    """
     def __init__(self, items):
         self.items = items
 
     def update_quality(self):
+        """Update the quality and sell_in values for all items in inventory."""
         for item in self.items:
-            if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
-                if item.quality > 0:
-                    if item.name != "Sulfuras, Hand of Ragnaros":
-                        item.quality = item.quality - 1
+            if item.name == "Sulfuras, Hand of Ragnaros":
+                # Legendary items never change
+                continue
+
+            # Update sell_in for all non-legendary items
+            item.sell_in -= 1
+
+            if item.name == "Aged Brie":
+                self._update_aged_brie(item)
+            elif item.name == "Backstage passes to a TAFKAL80ETC concert":
+                self._update_backstage_pass(item)
             else:
-                if item.quality < 50:
-                    item.quality = item.quality + 1
-                    if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                        if item.sell_in < 11:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-                        if item.sell_in < 6:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-            if item.name != "Sulfuras, Hand of Ragnaros":
-                item.sell_in = item.sell_in - 1
-            if item.sell_in < 0:
-                if item.name != "Aged Brie":
-                    if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                        if item.quality > 0:
-                            if item.name != "Sulfuras, Hand of Ragnaros":
-                                item.quality = item.quality - 1
-                    else:
-                        item.quality = item.quality - item.quality
-                else:
-                    if item.quality < 50:
-                        item.quality = item.quality + 1
+                self._update_regular_item(item)
+
+    def _update_aged_brie(self, item):
+        """Update Aged Brie quality which increases over time."""
+        self._increase_quality(item)
+        
+        # Quality increases twice as fast after sell date
+        if item.sell_in < 0:
+            self._increase_quality(item)
+
+    def _update_backstage_pass(self, item):
+        """Update Backstage pass quality which increases over time at variable rates."""
+        self._increase_quality(item)
+        
+        # Quality increases more as the concert approaches
+        if item.sell_in < 11:
+            self._increase_quality(item)
+        
+        if item.sell_in < 6:
+            self._increase_quality(item)
+        
+        # Quality drops to 0 after the concert
+        if item.sell_in < 0:
+            item.quality = 0
+
+    def _update_regular_item(self, item):
+        """Update regular item quality which decreases over time."""
+        self._decrease_quality(item)
+        
+        # Quality degrades twice as fast after sell date
+        if item.sell_in < 0:
+            self._decrease_quality(item)
+
+    def _increase_quality(self, item):
+        """Increase item quality by 1 without exceeding the maximum value."""
+        if item.quality < 50:
+            item.quality += 1
+
+    def _decrease_quality(self, item):
+        """Decrease item quality by 1 without going below zero."""
+        if item.quality > 0:
+            item.quality -= 1
 
 
 class Item:
+    """
+    An item in the Gilded Rose inventory system.
+    """
     def __init__(self, name, sell_in, quality):
         self.name = name
         self.sell_in = sell_in
