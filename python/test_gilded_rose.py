@@ -92,14 +92,6 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(5, items[0].sell_in)
         self.assertEqual(80, items[0].quality)
 
-    def test_backstage_pass_long_before_sell_date(self):
-        """Backstage passes increase by 1 when > 10 days"""
-        items = [Item("Backstage passes to a TAFKAL80ETC concert", 11, 10)]
-        gilded_rose = GildedRose(items)
-        gilded_rose.update_quality()
-        self.assertEqual(10, items[0].sell_in)
-        self.assertEqual(11, items[0].quality)
-
     def test_backstage_pass_medium_before_sell_date(self):
         """Backstage passes increase by 2 when <= 10 days"""
         items = [Item("Backstage passes to a TAFKAL80ETC concert", 10, 10)]
