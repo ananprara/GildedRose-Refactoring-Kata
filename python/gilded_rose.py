@@ -1,15 +1,32 @@
 # -*- coding: utf-8 -*-
 """
 Gilded Rose Inventory System
+
+This module implements the Gilded Rose inventory management system,
+which updates the quality of items based on specific rules.
 """
+from typing import List
 
 
 class GildedRose:
     """
     The Gilded Rose inventory management system that handles
     the daily update of quality and sell-in values for items.
+    
+    The system follows these rules:
+    - All items have a sell_in value which denotes days remaining to sell
+    - All items have a quality value which denotes how valuable the item is
+    - At the end of each day, both values are lowered for every item
+    - Once the sell_in days is less than zero, quality degrades twice as fast
+    - The quality of an item is never negative and never more than 50
+    - "Aged Brie" actually increases in quality the older it gets
+    - "Sulfuras" is a legendary item and never has to be sold or decreases in quality
+    - "Backstage passes" increase in quality as their sell_in value approaches 0:
+      Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less
+      Quality drops to 0 after the concert
+    - "Conjured" items degrade in quality twice as fast as normal items
     """
-    def __init__(self, items):
+    def __init__(self, items: List):
         self.items = items
 
     def update_quality(self):
@@ -87,6 +104,9 @@ class GildedRose:
 class Item:
     """
     An item in the Gilded Rose inventory system.
+    
+    This class should not be altered as it comes from the goblin
+    in the corner who will insta-rage and kill you.
     """
     def __init__(self, name, sell_in, quality):
         self.name = name
